@@ -1,0 +1,17 @@
+public static String convertByteArraysToBinary(byte[] input) {
+
+        StringBuilder result = new StringBuilder();
+        for (byte b : input) {
+            int val = b;
+            for (int i = 0; i < 8; i++) {
+                result.append((val & 128) == 0 ? 0 : 1);      // 128 = 1000 0000
+                val <<= 1;
+            }
+        }
+        return result.toString();
+
+    }
+
+https://mkyong.com/java/java-convert-string-to-binary/#:~:text=Convert%20Binary%20to%20String.,binary%20string%20to%20a%20string.
+
+https://www.codejava.net/java-se/file-io/how-to-read-and-write-binary-files-in-java
