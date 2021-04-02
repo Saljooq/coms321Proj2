@@ -1,0 +1,52 @@
+---------------------------------------------------------------------------------------
+
+task 1/
+- one- is to convert binary file to an arraylist of string
+
+something like this 
+
+
+0101001010
+10101010101
+
+to 
+
+{
+"0101001010",
+"10101010101"
+}
+
+---------------------------------------------------------------------------------------
+task 2 / converting the arraylist of instruction code strings to 
+
+
+this is something I'll be doing
+
+output two arraylist
+
+one arraylist is going to be an opcode
+
+opcode_string = 
+{ "ADDI",
+"ADD",
+...}
+
+registers = 
+{	int in[5],
+	..
+
+}
+
+- another thing to be done at the end which is the labels;
+
+---------------------------------------------------------------------------------------
+
+task  3/ ADD Rd, Rm, Rn
+
+for (int i = 0; i < opcode_string.length(); i++)
+
+	temp = opcode_string.get(i); //temp = "ADDI"
+
+	if (temp.equals("ADD")) {System.out.println("ADD X"+registers.get(i).in[3]+", X"+ ...); }
+	
+	
