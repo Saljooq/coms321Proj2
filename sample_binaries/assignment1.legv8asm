@@ -1,0 +1,183 @@
+///COMS_321_ASSIGNMENT_1////////////////////////////////////////
+///NAME: Saljooq Altaf, Amy Wieland, foo...//////////////////////
+///////////////////////////////////////////////////////////////
+//README:
+//MAIN: In the main we load value 5 to -1 into array X7, with size of the array in X6,
+// other than X6 and X7 used in main, all other X0-X7 registers are restored after being used
+// in a procedure
+//SELECT_SORT: Takes an argument of an array in X7 and the size of the array in X6, it utilizes find_smallest
+// and swap procedure output a sorted array - and restores all registers X0 and X5 used to pass arguments
+// and get results
+//FIND_SMALLEST: Takes an unsorted array in X7 and size of the array in X5 and passes the index of the
+// smallest integer in X0
+//SWAP: Takes an array from register X7 as the argument, along with registers X0 and X5, the indexes of the elements that need
+// to be swapped
+///////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////
+///////THIS IS OUR MAIN PROGRAM//////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+ADD X7, XZR, XZR     //Set X7 = 0, X7 will be the register for the array
+
+ADDI X9, XZR, #5    //Set X9 = 5
+STUR X9, [X7, #0]    //Store 5 in first array position (array[0] = 5)
+
+ADDI X9, XZR, #4     //Set X9 = 4
+STUR X9, [X7, #8]    //Store 4 in second array position (array[1] = 4)
+
+ADDI X9, XZR, #3     //Set X9 = 3
+STUR X9, [X7, #16]   //Store 3 in third array position (array[2] = 3)
+
+ADDI X9, XZR, #2     //Set X9 = 2
+STUR X9, [X7, #24]   //Store 2 in fourth array position (array[3] = 2)
+
+ADDI X9, XZR, #1     //Set X9 = 1
+STUR X9, [X7, #32]   //Store 1 in fifth array position (array[4] = 1)
+
+ADDI X9, XZR, #0     //Set X9 = 0
+STUR X9, [X7, #40]   //Store 0 in sixth array position (array[5] = 0)
+
+ADDI X9, XZR, #-1     //Set X9 = -1
+STUR X9, [X7, #48]   //Store -1 in seventh array position (array[6] = -1)
+
+ADDI X6, XZR, #7      //X6 is equal to the array size
+
+BL select_sort       //Branch to selection sort loop, which will use array in X7 and size in X6 to sort
+HALT                 //We did't use DUMP because that would lead to DUMP and HALT printing all the register twice, and it didn't look good
+////////////////////////////////////////////////////////////////////////
+/////MAIN ENDS HERE////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////
+///////////////SELECT SORT STARTS HERE///////////////////////////
+/////////////ARGUMENT(X7=>ARRAY, X6=>ARRAY SIZE)////////////////////
+///////////////////////////////////////////////////////////////
+select_sort:    //Begin selection sort
+ADD X15, XZR, X6     //Set X15 = 7, this will mark the size of the current_array
+SUBI SP, SP, #16
+STUR LR, [SP, #0]
+STUR X0, [SP, #8]       //since we will be using X0 in the procedure find_smallest to obtain smallest, we will need to restore it
+
+select_sort_loop:
+
+
+SUBIS XZR, X15, #1    //First we check if the array that we're finding the smallest number for is greater than 1
+B.LE end_of_sort       //If the current_array size is less than or equal to 1, then we quit
+
+
+SUBI SP, SP, #8        //storing value of X15 in the stack, since it can change in the other procedures
+STUR X15, [SP, #0]
+
+SUBI SP, SP, #8        //storing value of X5 in the stack, since we can't change it outside of main without restoring its original value, and we need to pass array size in X5 to find_smallest and as the pointer to the index of the smallest in swap procedure
+STUR X5, [SP, #0]
+
+ADD X5, X15, XZR
+BL find_smallest        // if the current_array size we're finding the smallest number for is greater than 1 so branch to find_smallest
+
+                        //Begin rest of sort - after getting the offset of the smallest number in X0
+ADD X5, XZR, XZR        //get the offset for the first element of the current_array
+
+BL swap                 //here we swap the elements X7[X0] with X7[X5] i.e. the smallest number and the first element in the unsorted array will be swapped
+
+ADDI X7, X7, #8         //the current unsorted array gets moved ahead, since we put the smallest at the beginning
+
+LDUR X15, [SP, #8]       //restoring X15 and popping the stack
+
+
+
+LDUR X5, [SP, #0]       //restoring X15 and popping the stack
+
+ADDI SP, SP, #16
+
+SUBI X15, X15, #1      //decrease the size of the (unsorted) current_array (stored in X15) by 1
+B select_sort_loop     //Branch to selection sort
+
+end_of_sort:
+
+LSL X10, X6, #3
+SUBI X10, X10, #8       //We need offset of (size-1) since the sort stops when size gets one
+SUB X7, X7, X10         //we restore X7 to its original value
+
+LDUR LR, [SP, #0]       //we load the location of the instruction that called this procedure
+LDUR X0, [SP, #8]       //we restore the value of X0 register to how we found it at the beginning of the procedure
+ADDI SP, SP, #16
+
+BR LR                   //goes back to main
+
+
+///////////////////////////////////////////////////////////////////
+///////////////SELECT SORT ENDS HERE///////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////FIND SMALLEST STARTS HERE///////////////////////////
+///////ARGUMENT(X7=>ARRAY, X5=>ARRAY SIZE)///////RETURNS(X0=>OFFSET OF SMALLEST INT)///
+///////////////////////////////////////////////////////////////////
+find_smallest:       //Beginning of find smallest function, trying to find smallest number in current_array
+
+SUBI SP, SP, #8
+STUR LR, [SP, #0]
+
+LDUR X9, [X7, #0]    //Load the value of array[0] into X9 - this, the first value in the current_array found at index 0 will mark the default smallest value
+ADD X10, XZR, XZR    //Set X10 = 0 - this will mark the index of the smallest number in the current_array
+ADD X0, XZR, XZR     //Set X0 = 0 - this will be simple counter to mark where we are in the loop as we go through the current_array
+
+BL for_loop           //Branch to for_loop
+
+LDUR LR, [SP, #0]
+ADDI SP, SP, #8
+BR LR
+
+
+
+for_loop:           //Begin for loop
+SUBS XZR, X10, X5   //X15 stores the current_array size that we're looking the smallest num for, so we will stop sorting once our counter reaches X5
+B.LT continue_on  //If counter is less than the current_array size, we continue to look for the smallest
+BR LR                   //else we end the for loop and go back to remaining select_sort
+
+continue_on:
+LSL X11, X10, #3    //If counter is still less than the current_array_size, we try to find the number stored in the location indexed by the counter, so we will multiply it by 8 and store in X11
+ADD X11, X7, X11    //Get the exact location of where the number stored in the location indexed by the counter
+LDUR X11, [X11, #0] //Load the value of the element X10'th (counter = X10) value in the current_array into X11
+SUBS XZR, X11, X9   //Check if the current value indexed at counter is less than the smallest value (X9) stored
+B.GE extra          //If the current value is not smaller than the smallest value, we simply add to the counter in extra
+ADD X0, X10, XZR    //Otherwise, we found smaller value; update X0 (holds the index of smallest value) with X10 (X10 = current array index)
+ADD X9, X11, XZR    //Set X9 = X11  - Update the smallest value (X9) with X11 (X11 is value of the current position in the array)
+                    //Branch to extra - here we add one to counter and continue the for_loop
+
+extra:              //Begin extra
+ADDI X10, X10, #1   //Set X10 = X10 + 1, meaning advance to next position in the current_array
+B for_loop          //Loop through for_loop again
+///////////////////////////////////////////////////////////////////
+///////////////FIND SMALLEST ENDS HERE///////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////SWAP STARTS HERE///////////////////////////
+///////ARGUMENT(X7=>ARRAY, X5=>OFFSET OF FIRST ELEMENT, X0=>OFFSET OF SMALLEST INT)////
+///////////////////////////////////////////////////////////////////
+
+swap:
+LSL X9, X0, #3       //X0 holds offset for the smallest num in the current_array, multiply X0 by 8 and store it in X9
+ADD X9, X7, X9       //Get the exact location of the smallest value in current_array, store it in X9
+LDUR X11, [X9, #0]   //Load smallest num in the current_array into X11
+LSL X5, X5, #3     //Multiply that offset by 8
+ADD X5, X5, X7     //Get the exact location of the last element and store in in X10
+LDUR X12, [X5, #0]  //Load the value of the last element of the current_array into X12
+STUR X11, [X5, #0]  //Store smallest number to the offset of the last element
+STUR X12, [X9, #0]   //Store last element to the where the smallest number was before
+
+BR LR
+
+///////////////////////////////////////////////////////////////////
+///////////////SWAP ENDS HERE///////////////////////////
+///////////////////////////////////////////////////////////////////
