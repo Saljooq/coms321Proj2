@@ -1,0 +1,97 @@
+package coms321p2;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class legv8 {
+
+	public static void main(String[] args) {
+		
+		//test use 10001011000111110000000000010100 -> translates to ADD X20, X0, X30
+		// TODO Auto-generated method stub
+		
+		ArrayList<String> input_string = new  ArrayList<String>();
+		input_string.add("10001011000111110000000000010100");
+
+		String[][] data = 
+			{
+				{"000101", "B", "B"}, 
+				{"01010100", "B.cond", "CB"},
+				{"10001010000", "AND", "R"},
+				{"10001011000", "ADD", "R"},
+				{"1001000100", "ADDI", "I"}
+				
+			};
+		
+		String[][] core = 
+			{
+					{"R", "Rm", "20", "16", "Shamt", "15", "10", "Rn", "9", "4", "Rd", "4", "0"}
+					//{},
+					//{}
+			};
+		
+		Scanner scnr = new Scanner(System.in);
+		String inst = scnr.next();
+		int found = -1;
+		for (int j = 0; j < inst.length() && found == -1; j++)
+		{
+			String temp = inst.substring(0, j);
+			//System.out.println(temp);
+			for (int i = 0; i < data.length; i++)
+			{
+				if (data[i][0].equals(temp)) 
+				{
+					System.out.println("Instruction name: "+data[i][1]+"\nInstruction Type: "+data[i][2]);
+					found = i;
+					break;
+				}
+			}
+		}
+		
+		int offset1;
+		int offset2;
+		
+		for (int i = 0; i < core.length; i++)
+		{
+			if (data[found][2].equals(core[i][0])) {
+				
+				int j = 1;
+				while (j < core[i].length)
+				{
+					
+					System.out.println(core[i][j]+": ");
+					j++;
+					
+					offset1 = Integer.parseInt(core[i][j]);
+					j++;
+					offset1 = 32 - offset1-1;
+					offset2 = Integer.parseInt(core[i][j]);
+					j++;
+					offset2 = 32 - offset2;
+					
+					String register = "X" + get_register(offset1, offset2, inst);
+					
+					System.out.println(register);
+				}			
+				
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	private static int get_register(int off1, int off2, String inst) {
+		
+		String temp = inst.substring(off1, off2);
+		int num = Integer.parseInt(temp, 2);
+		
+		return num;
+	}
+
+}
