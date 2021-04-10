@@ -1,0 +1,75 @@
+package assignment2;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.nio.file.Files;
+
+public class FileReader
+{
+	//Need for byteToHex
+	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+	
+	public static void main(String[] args) throws IOException
+	{
+		File input = new File("C:/Users/bento/Desktop/GitHub/Com_S_321_assignment2/coms321Proj2/sample_binaries/"+args[0]);
+		File output = new File("output.txt");
+	
+		FileWriter writer = new FileWriter(output);
+		
+		ArrayList<String> binaryInstructions = new ArrayList<>();
+		
+		byte[] fileBytes = Files.readAllBytes(input.toPath());
+		
+		for(int i = 0; i < fileBytes.length; i += 4)
+		{
+			byte[] instruction = Arrays.copyOfRange(fileBytes, i, i+4);
+			
+			//Test to make sure everything was read properly
+			System.out.println(bytesToHex(instruction));
+			
+			binaryInstructions.add(toBinaryString(instruction));
+		}
+		
+		//Print contents of binaryInstructions
+		for(String s : binaryInstructions)
+		{
+			writer.write(s);
+			writer.write("\n");
+		}
+		
+		writer.close();
+	}
+	
+	public static String toBinaryString(byte[] arr)
+	{
+		String result = "";
+		for(int i = 0; i < arr.length; i++)
+		{
+			StringBuilder sb = new StringBuilder("00000000");
+			for (int bit = 0; bit < 8; bit++)
+			{
+				if (((arr[i] >> bit) & 1) > 0)
+				{
+					sb.setCharAt(7 - bit, '1');
+				}
+			}
+			result += sb.toString();
+		}
+		return result;
+	}
+	
+	public static String bytesToHex(byte[] bytes)
+	{
+	    char[] hexChars = new char[bytes.length * 2];
+	    for (int j = 0; j < bytes.length; j++)
+	    {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+	    }
+	    return new String(hexChars);
+	}
+}
