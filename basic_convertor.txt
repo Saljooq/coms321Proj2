@@ -168,8 +168,9 @@ public class legv8 {
 		{
 
 			String temp = Instructions.get(i); //temp = "ADDI"
+			Integer[] in = stor.get(i).in;
 
-			if (temp.equals("ADD")) System.out.println("ADD X"+stor.get(i).in[3]+", X"+ stor.get(i).in[2] + ", X" +stor.get(i).in[0] ); 
+			if (temp.equals("ADD")) System.out.println("ADD X"+ in[3]+", X"+ in[2] + ", X" + in[0] ); 
 			
 			
 			////////////////////////////////////
