@@ -1,7 +1,13 @@
-package coms321p2;
-
 import java.util.ArrayList;
 import java.util.Scanner;
+
+class set{
+    Integer[] in = new Integer[5];
+    public set(){
+
+    }
+}
+
 
 public class legv8 {
 
@@ -9,79 +15,168 @@ public class legv8 {
 		
 		//test use 10001011000111110000000000010100 -> translates to ADD X20, X0, X30
 		// TODO Auto-generated method stub
-		
+		ArrayList<set> stor = new ArrayList<set>();
+		ArrayList<String> Instructions = new ArrayList<String>();
 		ArrayList<String> input_string = new  ArrayList<String>();
-		input_string.add("10001011000111110000000000010100");
+		
+		input_string.add("10001011000111110000000000010100"); //-> translates to ADD X20, X0, X31
+		input_string.add("10001011000111100000000000010100"); //-> translates to ADD X20, X0, X30
+		input_string.add("10110100000000000000000001100000"); //-> translates to CBZ X0, done
+		input_string.add("11010001000000000000010000001001"); //-> translates to SUBI X9, X0, #1 
+		
+		input_string.add("10110101000000000000000001001001"); //-> translates to CBNZ X9, body
+		input_string.add("11010110000000000000001111000000"); //-> translates to BR LR 
+		input_string.add("11010001000000000110001110011100"); //-> translates to SUBI SP, SP, #24  
+		
+		input_string.add("10001011000111110000000000010100"); //-> translates to ADD X20, X0, X31
+		input_string.add("11010001000000000000101001100000"); //-> translates to SUBI X0, X19, #2 
+		input_string.add("10010111111111111111111111110011"); //-> translates to BL -13
+		
+		
+		input_string.add("10001011000101000000000000000000"); //-> translates to ADD X0, X0, X20
+		input_string.add("11111000010000000000001110010100"); //-> translates to LDUR X20, [X28, #0]
 
+		
+		
 		String[][] data = 
 			{
-				{"000101", "B", "B"}, 
-				{"01010100", "B.cond", "CB"},
-				{"10001010000", "AND", "R"},
-				{"10001011000", "ADD", "R"},
-				{"1001000100", "ADDI", "I"}
+				{"000101", 		"B", 		"B"	}, 
+				{"01010100", 	"B.cond", 	"CB"},
+				{"100101",		"BL", 		"B"	},
+				{"11010110000",	"BR", 		"R"	},
+				{"10110101",	"CBNZ", 	"CB"	},
+				{"10110100",	"CBZ", 		"CB"	},
+				
+				
+				{"10001011000", "ADD", 		"R"	},
+				{"1001000100",	"ADDI", 	"I"	},
+				
+				{"11001011000",	"SUB", 		"R"	},
+				{"1101000100",	"SUBI", 	"I"	},
+				{"1111000100",	"SUBIS", 	"I"	},
+				{"11101011000",	"SUBS", 	"R"	},
+				
+				
+				{"10101010000",	"ORR", 		"R"	},
+				{"1011001000",	"ORRI", 	"I"	},
+				
+				{"11001010000",	"EOR", 		"R"	},
+				{"1101001000",	"EORI", 	"I"	},
+				
+				
+				{"10001010000",	"AND", 		"R"	},
+				{"1001001000",	"ANDI", 	"I"	},
+				
+				{"11111000010",	"LDUR", 	"D"	},
+				{"11111000000",	"STUR", 	"D"	},
+				
+				{"11010011011",	"LSL", 		"R"	},
+				{"11010011010",	"LSR", 		"R"	},
+				
+				{"11111111101",	"PRNT", 	"R"	},
+				{"11111111100",	"PRNL", 	"R"	},
+				{"11111111110",	"DUMP", 	"R"	},
+				{"11111111111",	"HALT", 	"R"	},
+				
+				{"10011011000",	"MUL", 	"R"	}
 				
 			};
 		
 		String[][] core = 
 			{
-					{"R", "Rm", "20", "16", "Shamt", "15", "10", "Rn", "9", "4", "Rd", "4", "0"}
-					//{},
-					//{}
+					{"R", "Rm", "20", "16", "Shamt", "15", "10", "Rn", "9", "5", "Rd", "4", "0"},
+					
+					{"I", "ALU_immediate", "21", "10", "Rn", "9", "5", "Rd", "4", "0"},
+					
+					{"D", "DT_address", "20", "12","op", "11","10", "Rn", "9", "5", "Rt", "4", "0"},
+					
+					{"B", "BR_address", "25", "0"},
+					
+					{"CB","COND_BR_ADDRESS", "23", "5","Rt", "4", "0"},
+					
+					{"I", "MOV_immediate", "20", "5", "Rd", "4", "0"}
 			};
 		
-		Scanner scnr = new Scanner(System.in);
-		String inst = scnr.next();
-		int found = -1;
-		for (int j = 0; j < inst.length() && found == -1; j++)
+		//Scanner scnr = new Scanner(System.in);
+		//String inst = scnr.next();
+		
+		for (int reader = 0; reader < input_string.size(); reader++)
 		{
-			String temp = inst.substring(0, j);
-			//System.out.println(temp);
-			for (int i = 0; i < data.length; i++)
+			set tempSet = new set();
+			String inst = input_string.get(reader);
+			int found = -1;
+			for (int j = 0; j < inst.length() && found == -1; j++)
 			{
-				if (data[i][0].equals(temp)) 
+				String temp = inst.substring(0, j);
+				//System.out.println(temp);
+				for (int i = 0; i < data.length; i++)
 				{
-					System.out.println("Instruction name: "+data[i][1]+"\nInstruction Type: "+data[i][2]);
-					found = i;
-					break;
+					if (data[i][0].equals(temp)) 
+					{
+						System.out.println("Instruction name: "+data[i][1]+"     Instruction Type: "+data[i][2]);
+						found = i;
+						break;
+					}
 				}
 			}
-		}
-		
-		int offset1;
-		int offset2;
-		
-		for (int i = 0; i < core.length; i++)
-		{
-			if (data[found][2].equals(core[i][0])) {
-				
-				int j = 1;
-				while (j < core[i].length)
-				{
+			
+			Instructions.add(data[found][1]);
+			
+			int offset1;
+			int offset2;
+			int reg_num = 0;
+			for (int i = 0; i < core.length; i++)
+			{
+				if (data[found][2].equals(core[i][0])) {
 					
-					System.out.println(core[i][j]+": ");
-					j++;
+					int j = 1;
+					while (j < core[i].length)
+					{
+						
+						System.out.print(core[i][j]+": ");
+						j++;
+						
+						offset1 = Integer.parseInt(core[i][j]);
+						j++;
+						offset1 = 32 - offset1-1;
+						offset2 = Integer.parseInt(core[i][j]);
+						j++;
+						offset2 = 32 - offset2;
+						
+						int decimalVal = get_register(offset1, offset2, inst);
+						
+						String register = "X" + decimalVal;
+						
+						tempSet.in[reg_num] = decimalVal;
+						reg_num++;
+						System.out.print(register+"   ");
+					}			
 					
-					offset1 = Integer.parseInt(core[i][j]);
-					j++;
-					offset1 = 32 - offset1-1;
-					offset2 = Integer.parseInt(core[i][j]);
-					j++;
-					offset2 = 32 - offset2;
-					
-					String register = "X" + get_register(offset1, offset2, inst);
-					
-					System.out.println(register);
-				}			
-				
+				}
 			}
+			System.out.println("\n");
+			stor.add(tempSet);
+		
 		}
 		
+		/////////////////////////////////////
+		//CODE FOR PRINTING CAN GO HERE//////
+		/////////////////////////////////////
 		
-		
-		
-		
-		
+		//SAMPLE PRINT
+		for (int i = 0; i < Instructions.size(); i++)
+		{
+
+			String temp = Instructions.get(i); //temp = "ADDI"
+
+			if (temp.equals("ADD")) System.out.println("ADD X"+stor.get(i).in[3]+", X"+ stor.get(i).in[2] + ", X" +stor.get(i).in[0] ); 
+			
+			
+			////////////////////////////////////
+			////ADD MORE ELSE IF STATEMENTS HERE
+			//////////////////////////////////
+			
+		}
 		
 	}
 	
@@ -90,8 +185,26 @@ public class legv8 {
 		
 		String temp = inst.substring(off1, off2);
 		int num = Integer.parseInt(temp, 2);
+		//System.out.print("---check:"+(off2-off1+1)+"---");
+		
+		if ((off2-off1)>6) { //check if the size is greater that 6, which is what shamt need, and 5 for registers, the remainder are assumed signed
+			if (inst.charAt(off1)=='1') {
+				//System.out.print("off1:"+off1+ "  off2:"+off2+"---coverting to negative---"+num+"-->upper>>"+(power(2,(off2 - off1))));
+				num = (num - (power(2,(off2 - off1))));
+				//System.out.print("---new value:"+num);
+			}
+		}
 		
 		return num;
+	}
+	
+	private static int power(int base, int exp) {
+		int res = 1;
+		for (int i = 0; i < exp; i++) {
+			res *= base;
+		}
+		
+		return res;
 	}
 
 }
