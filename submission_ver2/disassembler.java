@@ -260,7 +260,7 @@ public class disassembler
                         else if (temp.equals("SUBS")) System.out.println("SUBS " + check_name(in[3]) + ", " + check_name(in[2]) + ", " + check_name(in[0]));
 			else if (temp.equals("MUL")) System.out.println("MUL " + check_name(in[3]) + ", " + check_name(in[2]) + ", " + check_name(in[0]));
 			else if (temp.equals("PRNT")) System.out.println("PRNT "+ check_name(in[3]));
-			else if (temp.equals("PRNL")) System.out.println();
+			else if (temp.equals("PRNL")) System.out.println("PRNL");
 			else if (temp.equals("DUMP")) System.out.println("DUMP");
 			else if (temp.equals("HALT")) System.out.println("HALT");
                         else System.out.println("NOTHING");

@@ -1,99 +1,69 @@
-ADD X7, XZR, XZR
-ADDI X9, XZR, #5
-STUR X9, [X7, #0]
-ADDI X9, XZR, #4
-STUR X9, [X7, #8]
-ADDI X9, XZR, #3
-STUR X9, [X7, #16]
-ADDI X9, XZR, #2
-STUR X9, [X7, #24]
-ADDI X9, XZR, #1
-STUR X9, [X7, #32]
-ADDI X9, XZR, #0
-STUR X9, [X7, #40]
-ADDI X9, XZR, #-1
-STUR X9, [X7, #48]
-ADDI X6, XZR, #7
-BL label_0
-HALT
+ADD X1, X3, X4
+ADDI X1, XZR, #10
+AND X2, X1, X14
+ANDI X5, X1, #1
+B label_0
 
 
 label_0:
-ADD X15, XZR, X6
-SUBI SP, SP, #16
-STUR LR, [SP, #0]
-STUR X0, [SP, #8]
-
-
-label_4:
-SUBIS XZR, X15, #1
-B.LE label_1
-SUBI SP, SP, #8
-STUR X15, [SP, #0]
-SUBI SP, SP, #8
-STUR X5, [SP, #0]
-ADD X5, X15, XZR
-BL label_2
-ADD X5, XZR, XZR
-BL label_3
-ADDI X7, X7, #8
-LDUR X15, [SP, #8]
-LDUR X5, [SP, #0]
-ADDI SP, SP, #16
-SUBI X15, X15, #1
-B label_4
-
-
-label_1:
-LSL X10, X6, #3
-SUBI X10, X10, #8
-SUB X7, X7, X10
-LDUR LR, [SP, #0]
-LDUR X0, [SP, #8]
-ADDI SP, SP, #16
-BR LR
-
-
-label_2:
-SUBI SP, SP, #8
-STUR LR, [SP, #0]
-LDUR X9, [X7, #0]
-ADD X10, XZR, XZR
-ADD X0, XZR, XZR
-BL label_5
-LDUR LR, [SP, #0]
-ADDI SP, SP, #8
-BR LR
+SUBI X1, X1, #1
+CBZ X1, label_1
+CBNZ X1, label_0
 
 
 label_5:
-SUBS XZR, X10, X5
-B.LT label_6
+ORR X7, X11, X2
+ORRI X3, X9, #14
+B label_0
+
+
+label_1:
+SUBS X2, X2, XZR
+B.EQ label_0
+B.NE label_1
+B.HS label_2
+B.LO label_3
+B.MI label_4
+B.PL label_5
+B.VS label_6
+B.VC label_6
+B.HI label_5
+B.LS label_0
+B.GE label_0
+B.LT label_1
+B.GT label_1
+B.LE label_7
+
+
+label_2:
+EOR X4, X5, X6
+
+
+label_3:
+EORI X4, X5, #7
+
+
+label_4:
+BL label_8
+
+
+label_8:
+SUB X6, X6, X7
+SUBI X7, X8, #2
+SUBIS X2, X3, #12
 BR LR
 
 
 label_6:
-LSL X11, X10, #3
-ADD X11, X7, X11
-LDUR X11, [X11, #0]
-SUBS XZR, X11, X9
-B.GE label_7
-ADD X0, X10, XZR
-ADD X9, X11, XZR
+LSL X2, X4, #3
+LSR X2, X2, #3
+STUR X2, [SP, #0]
+LDUR X2, [SP, #0]
+MUL X2, X3, X4
 
 
 label_7:
-ADDI X10, X10, #1
-B label_5
+PRNT X2
 
-
-label_3:
-LSL X9, X0, #3
-ADD X9, X7, X9
-LDUR X11, [X9, #0]
-LSL X5, X5, #3
-ADD X5, X5, X7
-LDUR X12, [X5, #0]
-STUR X11, [X5, #0]
-STUR X12, [X9, #0]
-BR LR
+DUMP
+HALT
