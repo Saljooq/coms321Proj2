@@ -1,0 +1,61 @@
+ADD X1, X3, X4
+ADDI X1, XZR, #10
+AND X2, X1, X14
+ANDI X5, X1 #1
+B bob
+
+bob:
+SUBI X1, X1, #1
+CBZ res_zero
+CBNZ bob
+
+orr_branch:
+ORR X7, X11, X2
+ORRI X3, X9, #14
+B bob
+
+
+res_zero:
+SUBS X2, X2, XZR
+B.EQ bob
+B.NE res_zero
+B.HS hs_branch
+B.LO lo_branch
+B.MI link_test
+B.PL orr_branch
+B.VS shift_branch
+B.VC shift_branch
+B.HI orr_branch
+B.LS bob
+B.GE bob
+B.LT res_zero
+B.GT res_zero
+B.LE end
+
+hs_branch:
+EOR X4, X5, X6
+
+low_branch:
+EORI X4, X5 #7
+
+link_test:
+BL return_test
+
+return_test:
+SUB X6, X6, X7
+SUBI X7, X8, #2
+SUBIS X2, X3, #12
+BR LR
+
+shift_branch:
+LSL X2, X4, #3
+LSR X2, X2, #3
+STUR X2, [SP, #0]
+LDUR X2, [SP, #0]
+MUL X2, X3, X4
+
+end:
+PRNT X2
+PRNL
+DUMP
+HALT
