@@ -20,7 +20,7 @@ SUBS X2, X2, XZR
 B.EQ bob
 B.NE res_zero
 B.HS hs_branch
-B.LO lo_branch
+B.LO low_branch
 B.MI link_test
 B.PL orr_branch
 B.VS shift_branch
