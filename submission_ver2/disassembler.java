@@ -207,12 +207,13 @@ public class disassembler
 		/////////////////////////////////////
 
 		//SAMPLE PRINT
-		for (int i = 0; i < Instructions.size(); i++)
+		for (int i = 0; i < Instructions.size()+1; i++)
 		{
                         if (labelnum.contains(i))
                         {
                                 System.out.println("\n\n"+labels(i,0)+":");
                         }
+			if (i==Instructions.size()) break;
 
                         //System.out.print("  "+i+"  ");
 
