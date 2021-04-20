@@ -1,0 +1,21 @@
+ADDI X17, XZR, #32
+SUBI SP, SP, #16
+STUR X17, [SP, #0]
+ADD X17, XZR, XZR
+ADD X17, X17, FP
+STUR X17, [SP, #8]
+BL foo
+
+foo:
+LDUR X4, [SP, #0]
+LDUR X5, [SP, #8]
+SUBIS X5, X4, #32
+B.EQ end
+SUBIS X5, X4, #0
+B.EQ end_diff
+BR LR
+
+end_diff:
+ADDI SP, SP, #16
+
+end:
